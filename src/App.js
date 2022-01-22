@@ -1,35 +1,16 @@
 import './App.css';
 import { useState, useEffect } from "react";
 import { GenerateRandomLetter } from './LetterGenerator';
-import Popup from 'reactjs-popup';
-import { Points } from "./Points";
-import { Faults } from './Faults';
-import { RemainingTime } from "./RemainingTime";
-import { Reset } from "./Reset";
+import { Points } from "./Components/Points";
+import { Faults } from './Components/Faults';
+import { RemainingTime } from "./Components/RemainingTime";
+import { Reset } from "./Components/Reset";
 
 
-/*
-reset button not working properly, cannot start the game after reset
-
-
-*/
 
 function App() {
 
-  useEffect(() => {
-
-    if (time === 0) {
-      return () => {
-        clearInterval(intervalID);
-      }
-    }
-
-  }, []);
-
-
-
   const defaultTime = 10;
-  let intervalID = 0;
 
   let [pressedKey, setPressedKey] = useState("");
   let [randomLetter, setRandomLetter] = useState(GenerateRandomLetter());
@@ -37,18 +18,18 @@ function App() {
   let [fault, setFault] = useState(0);
   let [time, setTime] = useState(defaultTime);
   let [isGameStarted, setGameState] = useState(false);
-
+  let [intervalID, setIntervalID] = useState(0);
 
 
   const timeRemaining = () => {
-    const intervalID = setInterval(() => {
+    setIntervalID(setInterval(() => {
       if (time > 0) {
         setTime(--time);
       } else {
         setGameState(false);
       }
 
-    }, 1000);
+    }, 1000));
 
   }
 
@@ -75,8 +56,10 @@ function App() {
     setGameState(false);
     setPressedKey("");
 
-  }
+    clearInterval(intervalID);
 
+
+  }
 
   const handleKeyPress = (event) => {
 
@@ -92,7 +75,6 @@ function App() {
 
 
   }
-
 
 
   return (
@@ -112,7 +94,8 @@ function App() {
 
       <RemainingTime time={time} />
 
-      <button id="resetButton" onClick={resetGame}> Reset </button>
+      <Reset resetGame={resetGame} />
+
 
     </>
 
